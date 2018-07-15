@@ -1,0 +1,8 @@
+<project outputDir="..\..\..\混淆结果" baseDir=".\DMPlugin_DGJ\bin\混淆输出" xmlns="http://confuser.codeplex.com">
+  <module path="DMPlugin_DGJ.dll">
+    <rule pattern="true" preset="aggressive" inherit="false">
+      <protection id="anti debug" action="remove" />
+      <protection id="resources" action="remove" />
+    </rule>
+  </module>
+</project>
