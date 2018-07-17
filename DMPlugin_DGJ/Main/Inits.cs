@@ -148,7 +148,7 @@ namespace DMPlugin_DGJ
         private static void InitAbort()
         {
             PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
-            { Mainw.AboutWeb.Navigate(new Uri("https://www.danmuji.cn/resource/DGJ/about")); }));
+            { Mainw.AboutWeb.Navigate(new Uri("https://www.danmuji.org/resource/DGJ/about")); }));
 
             versionChecker = new VersionChecker("DGJ");
             if (versionChecker.FetchInfo())

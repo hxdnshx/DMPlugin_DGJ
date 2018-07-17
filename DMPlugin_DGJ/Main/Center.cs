@@ -10,7 +10,7 @@ namespace DMPlugin_DGJ
 
         internal static readonly string Plg_name = "点歌姬";
         internal static readonly string Plg_auth = "宅急送队长";
-        internal static readonly string Plg_ver = "2.0.0";
+        internal static readonly string Plg_ver = "2.0.1";
         internal static readonly string Plg_desc = "用弹幕来播放歌曲吧";
         internal static readonly string Plg_cont = "15253直播间";
         /// <summary>
