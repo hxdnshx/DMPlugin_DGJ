@@ -18,8 +18,8 @@ namespace DMPlugin_DGJ
          * 
          * 下载模块 - InitDowndloder
          * 初始化模块列表 - InitModule - 被配置文件依赖
+         * 窗体数据绑定 - InitWindowDataBinding - GUI绑定搜索模块
          * 加载配置文件 - Config.Load() - 依赖模块列表
-         * 窗体数据绑定 - InitWindowDataBinding - 依赖配置文件
          * 输出文本数据 - InitOutput - 依赖配置文件
          * 弹幕姬事件 - InitEventBind
          * 版本检查 - InitAbort
@@ -94,8 +94,8 @@ namespace DMPlugin_DGJ
                 {
                     InitDowndloder();
                     InitModule();
-                    Config.Load();
                     InitWindowDataBinding();
+                    Config.Load();
                     InitOutput();
                     InitEventBind();
 
@@ -139,7 +139,6 @@ namespace DMPlugin_DGJ
 
                 Mainw.Combo_OutputType.Items.Add("WaveOutEvent");
                 Mainw.Combo_OutputType.Items.Add("DirectSound");
-                Mainw.Combo_OutputType.SelectedIndex = Config.OutputType;
 
                 Mainw.setPlayPauseButtonIcon(false);
                 // Mainw.Combo_OutputType.SelectedIndex = 1; // 优先使用 DirectSound

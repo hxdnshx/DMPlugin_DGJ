@@ -55,6 +55,7 @@ namespace DMPlugin_DGJ
                 Center.Mainw.Setting_OneLyric.IsChecked = OneLyric;
                 Center.Mainw.Setting_OutputEmptyList.Text = OutputEmptyList;
                 Center.Mainw.Setting_OutputOtherNamePrefix.Text = OutputOtherNamePrefix;
+                Center.Mainw.Combo_OutputType.SelectedIndex = OutputType;
 
                 BLK_Load();
 
