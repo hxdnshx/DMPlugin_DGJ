@@ -16,6 +16,8 @@
         internal const bool ControlOtherPlayer  = false ;
         internal const bool DanmakuControl      = true ;
         internal const bool OneLyric            = false ;
+        internal const bool danmakuSongFirst    = true ;
+        internal const bool broadcasterLoop     = true ;
 
         internal const int OPTLineNum               = 5  ;
         internal const string OPTBefore             = "点歌命令：“点歌 歌名”\r\n[播放进度]/[歌曲长度]";

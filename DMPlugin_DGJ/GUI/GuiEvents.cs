@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -76,6 +78,44 @@ namespace DMPlugin_DGJ
             { m.SafeSetting(); }
         }
 
+        private void AddPlaylist(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            var contextMenu = (ContextMenu)menuItem.Parent;
+            var items = (DataGrid)contextMenu.PlacementTarget;
+            if (items.SelectedCells.Count == 0)
+                return;
+            var item = items.SelectedCells[0].Item as SongsSearchModule;
+            if (item == null)
+            { return; }
+
+            InputDialog i = new InputDialog("播放列表关键字：", "", "导入播放列表");
+            if (i.ShowDialog() == true && i.Answer != string.Empty)
+            {
+                string searchStr = i.Answer;
+                Task.Run(() =>
+                {
+                    var result = item.SafeGetPlaylist("播主", System.Web.HttpUtility.UrlEncode(searchStr), Config.needLyric);
+                    if (result == null)
+                    {
+                        MessageBox.Show($"未找到对应的歌单：{i.Answer}", "提示");
+                        return;
+                    }
+                    var preview = string.Join("\n",result.Take(6).Select(song=>$"{song.SongName}-{song.SingersText}"));
+                    if (MessageBox.Show($"您确认要导入歌单里的以下曲目吗？\n{preview}\n{(result.Count > 6 ? "......" : "")}",
+                            "确认",MessageBoxButton.YesNo)
+                        == MessageBoxResult.Yes)
+                    {
+                        foreach (var songItem in result)
+                        {
+                            Center.AddSong(songItem);
+                        }
+                    }
+                });
+                
+            }
+        }
+        
         /// <summary>
         /// 添加歌曲
         /// </summary>
@@ -469,6 +509,11 @@ namespace DMPlugin_DGJ
         private void Set_OL_Change(object sender, RoutedEventArgs e)
         { Config.OneLyric = (bool)((ToggleButton)sender).IsChecked; }
 
+        private void Set_DSF_Change(object sender, RoutedEventArgs e)
+        { Config.DanmakuSongFirst = (bool)((ToggleButton)sender).IsChecked; }
+
+        private void Set_BL_Change(object sender, RoutedEventArgs e)
+        { Config.BroadcasterLoop = (bool)((ToggleButton)sender).IsChecked; }
 
         #endregion
 

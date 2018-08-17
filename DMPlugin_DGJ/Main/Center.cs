@@ -58,7 +58,24 @@ namespace DMPlugin_DGJ
         {
             PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
             {
-                Songs.Add(song);
+                //寻找插入位置
+                if (Config.danmakuSongFirst && song.User != "播主")
+                {
+                    //这里保证前面的歌曲永远是播主的
+                    int index = 0;
+                    for (index = 0; index < Songs.Count; index++)
+                    {
+                        if (Songs[index].Status == SongItem.SongStatus.Playing)
+                            continue;
+                        if (Songs[index].User == "播主")
+                        {
+                            break;
+                        }
+                    }
+                    Songs.Insert(index, song);
+                }
+                else
+                    Songs.Add(song);
             }));
         }
 

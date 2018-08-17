@@ -108,9 +108,11 @@ namespace DMPlugin_DGJ
         /// 请重写此方法
         /// 获取播放列表方法
         /// </summary>
+        /// <param name="who">搜索人昵称</param>
         /// <param name="keyword"></param>歌单的关键词(或ID)
+        /// <param name="needLyric">是否需要歌词</param>
         /// <returns></returns>
-        protected internal virtual List<SongItem> GetPlaylist(string keyword, bool needLyric = false)
+        protected internal virtual List<SongItem> GetPlaylist(string who, string keyword, bool needLyric = false)
         {
             return null;
         }
@@ -137,6 +139,43 @@ namespace DMPlugin_DGJ
                     {
                         outfile.WriteLine("请将错误报告发给 " + ModuleAuther + " 谢谢，联系方式：" + ModuleCont);
                         outfile.WriteLine("参数：who=" + who + " what=" + what + " needLyric=" + (needLyric ? "true" : "false"));
+                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
+                        outfile.Write(ex.ToString());
+                        new Thread(() =>
+                        {
+                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
+日志已经保存在桌面,请发给引擎作者 " + ModuleAuther + ", 联系方式：" + ModuleCont);
+                        }).Start();
+                    }
+                }
+                catch (Exception)
+                { }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 主插件调用用
+        /// </summary>
+        /// <param name="who">搜索人昵称(一般会是主播)</param>
+        /// <param name="keyword"></param>歌单的关键词(或ID)
+        /// <param name="needLyric">是否需要歌词</param>
+        /// <returns></returns>
+        public List<SongItem> SafeGetPlaylist(string who, string keyword, bool needLyric = false)
+        {
+            try
+            {
+                return GetPlaylist(who, keyword, needLyric);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
+                    {
+                        outfile.WriteLine("请将错误报告发给 " + ModuleAuther + " 谢谢，联系方式：" + ModuleCont);
+                        outfile.WriteLine("参数：who=" + who + " what=" + keyword + " needLyric=" + (needLyric ? "true" : "false"));
                         outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
                         outfile.Write(ex.ToString());
                         new Thread(() =>

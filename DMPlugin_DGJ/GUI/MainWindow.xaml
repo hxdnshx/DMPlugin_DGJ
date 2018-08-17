@@ -197,6 +197,7 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="用此搜索模块点歌" Click="AddSong"/>
+                                <MenuItem Header="导入播放列表" Click="AddPlaylist" />
                                 <MenuItem Header="设置" x:Name="Module_Setting" Click="ModuleSettingClick" Visibility="Collapsed"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
@@ -365,6 +366,14 @@
                         <StackPanel Margin="5" Orientation="Horizontal">
                             <ToggleButton x:Name="Setting_OneLyric" Checked="Set_OL_Change" Unchecked="Set_OL_Change"/>
                             <TextBlock Margin="10 0 0 0">只输出一行歌词（默认为两行）</TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <ToggleButton x:Name="Setting_DanmakuSongFirst" Checked="Set_DSF_Change" Unchecked="Set_DSF_Change"/>
+                            <TextBlock Margin="10 0 0 0">优先播放观众点歌</TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <ToggleButton x:Name="Setting_BroadcasterLoop" Checked="Set_BL_Change" Unchecked="Set_BL_Change"/>
+                            <TextBlock Margin="10 0 0 0">播主的点歌播放完毕后再次加入列表末尾</TextBlock>
                         </StackPanel>
                     </StackPanel>
                     <Rectangle Grid.Column="1" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Gray" />

@@ -34,6 +34,8 @@ namespace DMPlugin_DGJ
             ControlOtherPlayer = (bool.TryParse(ini.Read("ControlOtherPlayer"), out abool) ? abool : DefaultConfig.ControlOtherPlayer);
             DanmakuControl = (bool.TryParse(ini.Read("DanmakuControl"), out abool) ? abool : DefaultConfig.DanmakuControl);
             OneLyric = (bool.TryParse(ini.Read("OneLyric"), out abool) ? abool : DefaultConfig.OneLyric);
+            DanmakuSongFirst = (bool.TryParse(ini.Read("DanmakuSongFirst"), out abool) ? abool : DefaultConfig.DanmakuSongFirst);
+            BroadcasterLoop = (bool.TryParse(ini.Read("BroadcasterLoop"), out abool) ? abool : DefaultConfig.BroadcasterLoop);
 
             OutputEmptyList = ini.KeyExists("OutputEmptyList") ? ini.Read("OutputEmptyList") : DefaultConfig.OutputEmptyList;
             OutputOtherNamePrefix = ini.KeyExists("OutputOtherNamePrefix") ? ini.Read("OutputOtherNamePrefix") : DefaultConfig.OutputOtherNamePrefix;
@@ -53,6 +55,8 @@ namespace DMPlugin_DGJ
                 Center.Mainw.Setting_ControlOtherPlayer.IsChecked = ControlOtherPlayer;
                 Center.Mainw.Setting_DanmakuControl.IsChecked = DanmakuControl;
                 Center.Mainw.Setting_OneLyric.IsChecked = OneLyric;
+                Center.Mainw.Setting_DanmakuSongFirst.IsChecked = DanmakuSongFirst;
+                Center.Mainw.Setting_BroadcasterLoop.IsChecked = BroadcasterLoop;
                 Center.Mainw.Setting_OutputEmptyList.Text = OutputEmptyList;
                 Center.Mainw.Setting_OutputOtherNamePrefix.Text = OutputOtherNamePrefix;
                 Center.Mainw.Combo_OutputType.SelectedIndex = OutputType;
@@ -107,6 +111,8 @@ namespace DMPlugin_DGJ
             ini.Write("DanmakuControl", DanmakuControl.ToString());
             ini.Write("OutputEmptyList", OutputEmptyList);
             ini.Write("OutputOtherNamePrefix", OutputOtherNamePrefix);
+            ini.Write("DanmakuSongFirst",DanmakuSongFirst.ToString());
+            ini.Write("BroadcasterLoop", BroadcasterLoop.ToString());
 
             ini.Write("moduleA", R_ModuleNameA); // 保存当前选择的搜索模块的名字
             ini.Write("moduleB", R_ModuleNameB);
@@ -334,6 +340,20 @@ namespace DMPlugin_DGJ
         /// outputUpdateTime
         /// </summary>
         internal static int outputUpdateTime
+        { get; set; }
+
+        /// <summary>
+        /// 优先播放弹幕上点的歌曲
+        /// DanmakuSongFirst
+        /// </summary>
+        internal static bool DanmakuSongFirst
+        { get; set; }
+
+        /// <summary>
+        /// 播主点的歌曲在播放结束后插入到播放列表末尾
+        /// BroadcasterLoop
+        /// </summary>
+        internal static bool BroadcasterLoop
         { get; set; }
 
         #endregion
