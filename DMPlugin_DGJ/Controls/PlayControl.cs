@@ -65,7 +65,7 @@ namespace DMPlugin_DGJ
                             playNotDone = false;
                             UnLoad();
                             RemoveSong(iitem);
-                            if (Config.broadcasterLoop)
+                            if (Config.BroadcasterLoop)
                             {
                                 iitem.setStatus(SongItem.SongStatus.WaitingDownload);
                                 Center.AddSong(iitem);
