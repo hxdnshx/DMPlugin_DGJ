@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Windows.Documents;
 
 namespace DMPlugin_DGJ
 {
@@ -98,6 +100,17 @@ namespace DMPlugin_DGJ
         /// <param name="needLyric">是否需要歌词</param>
         /// <returns>打包好的搜索结果</returns>
         protected internal virtual SongItem Search(string who, string what, bool needLyric = false)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// 请重写此方法
+        /// 获取播放列表方法
+        /// </summary>
+        /// <param name="keyword"></param>歌单的关键词(或ID)
+        /// <returns></returns>
+        protected internal virtual List<SongItem> GetPlaylist(string keyword, bool needLyric = false)
         {
             return null;
         }
