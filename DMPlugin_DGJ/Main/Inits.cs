@@ -270,11 +270,11 @@ namespace DMPlugin_DGJ
             // SearchModules.Add(new netease_resrsa().setMainPlugin(PluginMain.that));
             // SearchModules.Add(new netease_old().setMainPlugin(PluginMain.that));
             // SearchModules.Add(new netease_suggest().setMainPlugin(PluginMain.that));
-            SearchModules.Add(new LWLAPI.LWLAPI_Netease().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LWLAPI_Tencent().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LWLAPI_Kugou().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LWLAPI_Xiami().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LWLAPI_Baidu().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiNetease().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiTencent().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiKugou().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiXiami().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiBaidu().setMainPlugin(PluginMain.self));
 
             var path = "";
             try
