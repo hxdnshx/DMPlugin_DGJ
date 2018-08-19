@@ -27,8 +27,6 @@ namespace DMPlugin_DGJ
             OutputType = (int.TryParse(ini.Read("OutputType"), out aint) ? aint : DefaultConfig.OutputType);
 
             bool abool;
-            // needLyric = (bool.TryParse(ini.Read("needLyric"), out abool) ? abool : DefaultConfig.needLyric);
-            needLyric = true;
             CanMultiSong = (bool.TryParse(ini.Read("CanMultiSong"), out abool) ? abool : DefaultConfig.CanMultiSong);
             AdminOnly = (bool.TryParse(ini.Read("AdminOnly"), out abool) ? abool : DefaultConfig.AdminOnly);
             ControlOtherPlayer = (bool.TryParse(ini.Read("ControlOtherPlayer"), out abool) ? abool : DefaultConfig.ControlOtherPlayer);
@@ -42,7 +40,6 @@ namespace DMPlugin_DGJ
 
             PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
             {
-                Center.Mainw.Check_Lyric.IsChecked = needLyric;
                 Center.Mainw.Vol.Value = songVol;
                 Center.Mainw.Setting_MaxSongCount.Text = maxSongCount.ToString();
                 Center.Mainw.Setting_CanMultiSong.IsChecked = CanMultiSong;
@@ -93,7 +90,6 @@ namespace DMPlugin_DGJ
             ini.Write("请勿编辑此文件", "Don't Edit This File", "请勿编辑此文件");
 
             ini.Write("songVol", songVol.ToString());
-            ini.Write("needLyric", needLyric.ToString());
             ini.Write("maxSongCount", maxSongCount.ToString());
             ini.Write("outputUpdateTime", outputUpdateTime.ToString());
             ini.Write("OutputType", OutputType.ToString());
@@ -255,12 +251,12 @@ namespace DMPlugin_DGJ
         internal static int songVol
         { get; set; }
 
-        /// <summary>
-        /// 是否需要歌词
-        /// needLryic
-        /// </summary>
-        internal static bool needLyric
-        { get; set; }
+        // /// <summary>
+        // /// 是否需要歌词
+        // /// needLryic
+        // /// </summary>
+        // internal static bool needLyric
+        // { get; set; }
 
         /// <summary>
         /// 播放列表里最多几首歌

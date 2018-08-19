@@ -21,15 +21,15 @@ namespace DMPlugin_DGJ
         { get; set; }
 
         /// <summary>
-        /// 歌名
-        /// </summary>
-        public string SongName
-        { get; internal set; }
-
-        /// <summary>
         /// 歌曲ID
         /// </summary>
         public string SongID
+        { get; internal set; }
+
+        /// <summary>
+        /// 歌名
+        /// </summary>
+        public string SongName
         { get; internal set; }
 
         /// <summary>
@@ -55,14 +55,14 @@ namespace DMPlugin_DGJ
         /// <summary>
         /// 点歌人
         /// </summary>
-        public string User
+        public string UserName
         { get; internal set; }
 
-        /// <summary>
+        // /// <summary>
         /// 下载地址
         /// </summary>
-        public string DownloadURL
-        { get; internal set; }
+        // public string DownloadURL
+        // { get; internal set; }
 
         /// <summary>
         /// 歌曲文件储存路径
@@ -73,7 +73,7 @@ namespace DMPlugin_DGJ
         /// <summary>
         /// 文本歌词
         /// </summary>
-        public string Lyric
+        public Lrc Lyric
         { get; internal set; }
 
         /// <summary>
@@ -86,17 +86,13 @@ namespace DMPlugin_DGJ
         /// 歌曲状态
         /// </summary>
         public SongStatus Status
-        { get; internal set; }
+        { get; private set; }
 
         internal void SetStatus(SongStatus status)
         {
             Status = status;
             RaisePropertyChanged("Status");
         }
-        /// <summary>
-        /// 格式化后的歌词
-        /// </summary>
-        internal Lrc _FLyric = null;
 
         /// <summary>
         /// 
@@ -116,57 +112,21 @@ namespace DMPlugin_DGJ
         /// <param name="_DownloadURL">下载地址</param>
         /// <param name="_lyric">文本格式歌词</param>
         /// <param name="_note">歌曲信息备注</param>
-        private SongItem(SongsSearchModule _module, string _Name, string _ID, string _WhoWantThis, string[] _Singers, string _DownloadURL, string _lyric = "", string _note = "")
+        internal SongItem(SongInfo songInfo, string userName)
         {
             Status = SongStatus.WaitingDownload;
-            Module = _module;
-            SongName = _Name;
-            SongID = _ID;
-            Singers = _Singers;
-            User = _WhoWantThis;
-            DownloadURL = _DownloadURL;
-            Lyric = _lyric;
-            Note = _note;
+
+            UserName = userName;
+
+            Module = songInfo.Module;
+            SongID = songInfo.Id;
+            SongName = songInfo.Name;
+            Singers = songInfo.Singers;
+            Lyric = Lrc.InitLrc(songInfo.Lyric);
+            Note = songInfo.Note;
+            // DownloadURL = _DownloadURL;
 
             RaisePropertyChanged("");
-        }
-
-        /// <summary>
-        /// 创建一个歌曲信息
-        /// </summary>
-        /// <param name="module">创建歌曲信息的搜素模块</param>
-        /// <param name="Name">歌曲名称</param>
-        /// <param name="ID">歌曲ID</param>
-        /// <param name="Who">点歌人昵称</param>
-        /// <param name="Singers">歌手</param>
-        /// <param name="DownloadURL">MP3下载地址</param>
-        /// <param name="lyric">歌词文本</param>
-        /// <param name="note">备注</param>
-        /// <returns></returns>
-        public static SongItem init(SongsSearchModule module, string Name, string ID, string Who, string[] Singers, string DownloadURL, string lyric = "", string note = "")
-        {
-            return new SongItem(module, Name, ID, Who, Singers, DownloadURL, lyric, note);
-        }
-
-        /// <summary>
-        /// 从文本歌词解析歌词
-        /// </summary>
-        /// <param name="lyric"></param>
-        /// <returns>结果</returns>
-        internal Lrc getFLyric(string lyric = "")
-        {
-            if (lyric == "")
-                lyric = Lyric;
-            if (lyric == "")
-            {
-                _FLyric = null;
-            }
-            else
-            {
-                Lrc l = Lrc.InitLrc(lyric);
-                _FLyric = l;
-            }
-            return _FLyric;
         }
 
         /// <summary>

@@ -9,6 +9,8 @@ namespace DMPlugin_DGJ
         private bool canChangeName = true;
         private PluginMain plugin = null;
 
+        #region 模块信息
+
         /// <summary>
         /// 模块名称
         /// </summary>
@@ -34,6 +36,7 @@ namespace DMPlugin_DGJ
         /// </summary>
         public string ModuleDescription { get; private set; } = "没有填写说明";
 
+
         /// <summary>
         /// 是否负责下载
         /// </summary>
@@ -45,6 +48,7 @@ namespace DMPlugin_DGJ
         /// </summary>
         public bool IsNeedSettings
         { get; protected set; }
+
 
         /// <summary>
         /// 设置搜索模块信息
@@ -73,6 +77,8 @@ namespace DMPlugin_DGJ
             }
         }
 
+        #endregion
+
         /// <summary>
         /// 搜索歌曲
         /// </summary>
@@ -80,20 +86,20 @@ namespace DMPlugin_DGJ
         /// <param name="what">要搜索的字符串</param>
         /// <param name="needLyric">是否需要歌词</param>
         /// <returns>打包好的搜索结果</returns>
-        protected internal abstract SongItem Search(string who, string what, bool needLyric = false);
+        protected abstract SongInfo Search(string keyword);
 
         /// <summary>
         /// 主插件调用用
         /// </summary>
-        /// <param name="who">搜索人昵称</param>
-        /// <param name="what">要搜索的字符串</param>
+        /// <param name="username">搜索人昵称</param>
+        /// <param name="keyword">要搜索的字符串</param>
         /// <param name="needLyric">是否需要歌词</param>
         /// <returns>搜索结果</returns>
-        public SongItem SafeSearch(string who, string what, bool needLyric = false)
+        internal SongInfo SafeSearch(string keyword)
         {
             try
             {
-                return Search(who, what, needLyric);
+                return Search(keyword);
             }
             catch (Exception ex)
             {
@@ -103,7 +109,39 @@ namespace DMPlugin_DGJ
                     using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
                     {
                         outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
-                        outfile.WriteLine("参数：who=" + who + " what=" + what + " needLyric=" + (needLyric ? "true" : "false"));
+                        outfile.WriteLine("参数：" + keyword);
+                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
+                        outfile.Write(ex.ToString());
+                        new Thread(() =>
+                        {
+                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
+日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
+                        }).Start();
+                    }
+                }
+                catch (Exception)
+                { }
+                return null;
+            }
+        }
+
+        protected abstract string GetDownloadUrl(SongInfo songInfo);
+
+        internal string SafeGetDownloadUrl(SongInfo songInfo)
+        {
+            try
+            {
+                return GetDownloadUrl(songInfo);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
+                    {
+                        outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
+                        outfile.WriteLine("参数：" + songInfo.Id);
                         outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
                         outfile.Write(ex.ToString());
                         new Thread(() =>
@@ -121,25 +159,17 @@ namespace DMPlugin_DGJ
 
         /// <summary>
         /// 请在不能使用普通方式下载歌曲文件的情况下重写替代下载
-        /// 不重写等于返回(int)-1
-        /// 重写后将由搜索模块负责歌曲的下载
-        /// 下载成功请返回(int)1
-        /// 下载失败请返回(int)0
-        /// 如果希望由点歌姬的下载模块下载文件请返回(int)-1
         /// </summary>
         /// <param name="item">要下载的歌曲信息</param>
         /// <returns>下载是否成功</returns>
-        protected internal virtual int Download(SongItem item)
-        {
-            return -1;
-        }
+        protected abstract DownloadStatus Download(SongItem item);
 
         /// <summary>
         /// 主插件调用用
         /// </summary>
         /// <param name="item">要下载的歌曲信息</param>
         /// <returns>下载是否成功</returns>
-        public int SafeDownload(SongItem item)
+        internal DownloadStatus SafeDownload(SongItem item)
         {
             try
             {
@@ -165,7 +195,7 @@ namespace DMPlugin_DGJ
                 }
                 catch (Exception)
                 { }
-                return -1;
+                return DownloadStatus.Failed;
             }
         }
 
@@ -174,7 +204,7 @@ namespace DMPlugin_DGJ
         /// 设置搜索模块时会调用
         /// 会在新线程调用
         /// </summary>
-        protected internal virtual void Setting()
+        protected virtual void Setting()
         {
 
         }
@@ -182,7 +212,7 @@ namespace DMPlugin_DGJ
         /// <summary>
         /// 主插件调用用
         /// </summary>
-        public void SafeSetting()
+        internal void SafeSetting()
         {
             new Thread(() =>
             {
@@ -218,7 +248,7 @@ namespace DMPlugin_DGJ
         /// </summary>
         /// <param name="pl">插件本体</param>
         /// <returns>模块本体</returns>
-        internal SongsSearchModule setMainPlugin(PluginMain pl)
+        internal SongsSearchModule SetMainPlugin(PluginMain pl)
         {
             plugin = pl;
             return this;
@@ -246,6 +276,18 @@ namespace DMPlugin_DGJ
                     plugin.AddDM(text);
                 }
             }
+        }
+
+        public enum DownloadStatus
+        {
+            /// <summary>
+            /// 下载成功
+            /// </summary>
+            Success = 0,
+            /// <summary>
+            /// 下载失败
+            /// </summary>
+            Failed = -1
         }
     }
 }

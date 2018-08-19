@@ -84,13 +84,12 @@ namespace DMPlugin_DGJ
                 Center.Mainw.setDownloadStatus("由搜索模块负责下载中");
                 switch (item.Module.SafeDownload(item))
                 {
-                    case 1: // 下载成功
+                    case SongsSearchModule.DownloadStatus.Success: // 下载成功
                         dlItem.SetStatus(SongItem.SongStatus.WaitingPlay);
                         Center.Logg("歌曲下载 下载成功：" + item.SongName);
                         Center.Mainw.setDownloadStatus("搜索模块返回下载成功");
                         return;
-                    case 0: // 下载失败 错误信息由module输出
-                    default:
+                    default: // 下载失败 错误信息由module输出
                         Center.RemoveSong(item);
                         Center.Mainw.setDownloadStatus("搜索模块返回下载失败");
                         return;

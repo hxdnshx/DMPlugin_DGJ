@@ -118,7 +118,7 @@ namespace DMPlugin_DGJ
             waveout.PlaybackStopped += Waveout_PlaybackStopped;
             SetVol();
 
-            lrc = itemm._FLyric ?? itemm.getFLyric();
+            lrc = itemm.Lyric;
         }
 
         private static IWavePlayer Create()

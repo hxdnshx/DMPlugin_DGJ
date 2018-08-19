@@ -270,11 +270,11 @@ namespace DMPlugin_DGJ
             // SearchModules.Add(new netease_resrsa().setMainPlugin(PluginMain.that));
             // SearchModules.Add(new netease_old().setMainPlugin(PluginMain.that));
             // SearchModules.Add(new netease_suggest().setMainPlugin(PluginMain.that));
-            SearchModules.Add(new LWLAPI.LwlApiNetease().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LwlApiTencent().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LwlApiKugou().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LwlApiXiami().setMainPlugin(PluginMain.self));
-            SearchModules.Add(new LWLAPI.LwlApiBaidu().setMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiNetease().SetMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiTencent().SetMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiKugou().SetMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiXiami().SetMainPlugin(PluginMain.self));
+            SearchModules.Add(new LWLAPI.LwlApiBaidu().SetMainPlugin(PluginMain.self));
 
             var path = "";
             try
@@ -302,7 +302,7 @@ namespace DMPlugin_DGJ
                                 if (exportedType.BaseType == typeof(SongsSearchModule))
                                 {
                                     var Module = (SongsSearchModule)Activator.CreateInstance(exportedType);
-                                    SearchModules.Add(Module.setMainPlugin(PluginMain.self));
+                                    SearchModules.Add(Module.SetMainPlugin(PluginMain.self));
                                 }
                             }
                             catch (Exception) { }

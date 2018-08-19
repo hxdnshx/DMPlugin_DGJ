@@ -116,7 +116,7 @@
     <Compile Include="GUI\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\Lrc.cs" />
+    <Compile Include="Structs\Lrc.cs" />
     <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

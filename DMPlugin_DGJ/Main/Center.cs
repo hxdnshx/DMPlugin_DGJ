@@ -80,30 +80,28 @@ namespace DMPlugin_DGJ
             }));
         }
 
-        internal static SongItem SearchSong(string username, string str, bool? arglyric = null)
+        internal static SongInfo SearchSong(string keyword)
         {
-            bool lrc = arglyric == null ? Config.needLyric : (bool)arglyric;
-
             if (CurrentModuleA == null)
             { Logg("没有歌曲搜索模块！", true); return null; } // 默认搜索模块没设置
 
-            string str_encoded = System.Web.HttpUtility.UrlEncode(str);
+            string str_encoded = System.Web.HttpUtility.UrlEncode(keyword);
 
-            SongItem i = CurrentModuleA.SafeSearch(username, str_encoded, lrc);
+            SongInfo i = CurrentModuleA.SafeSearch(str_encoded);
             if (i == null && CurrentModuleB != null)
-            { i = CurrentModuleB.SafeSearch(username, str_encoded, lrc); }
+            { i = CurrentModuleB.SafeSearch(str_encoded); }
 
-            if (i != null && i.User != username)
-            {
-                Logg($"搜索模块“{i.ModuleName}”因传递数据错误已被禁用", true);
-                PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
-                {
-                    SearchModules.Remove(i.Module);
-                    if (Mainw.Combo_SearchModuleA.SelectedIndex == -1) // 防null
-                    { Mainw.Combo_SearchModuleA.SelectedIndex = 0; }
-                }));
-                return null;
-            }
+            // if (i != null && i.User != username)
+            // {
+            //     Logg($"搜索模块“{i.ModuleName}”因传递数据错误已被禁用", true);
+            //     PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            //     {
+            //         SearchModules.Remove(i.Module);
+            //         if (Mainw.Combo_SearchModuleA.SelectedIndex == -1) // 防null
+            //         { Mainw.Combo_SearchModuleA.SelectedIndex = 0; }
+            //     }));
+            //     return null;
+            // }
 
             return i;
         }
@@ -113,8 +111,10 @@ namespace DMPlugin_DGJ
         /// </summary>
         /// <param name="i">歌曲信息</param>
         /// <returns>是否在黑名单中</returns>
-        internal static bool isBlack(SongItem i)
+        internal static bool IsInBlackList(SongInfo i)
         {
+            string singerstr = string.Join("", i.Singers);
+
             foreach (BlackInfoItem b in BlackList)
             {
                 if (b.BLK_Enable)
@@ -122,15 +122,15 @@ namespace DMPlugin_DGJ
                     switch (b.BLK_Type)
                     {
                         case BlackInfoType.歌名:
-                            if (i.SongName.Contains(b.BLK_Text))
+                            if (i.Name.IndexOf(b.BLK_Text, StringComparison.CurrentCultureIgnoreCase) > -1)
                             { return true; }
                             break;
                         case BlackInfoType.歌手:
-                            if (i.SingersText.Contains(b.BLK_Text))
+                            if (singerstr.IndexOf(b.BLK_Text, StringComparison.CurrentCultureIgnoreCase) > -1)
                             { return true; }
                             break;
                         case BlackInfoType.歌曲ID:
-                            if (i.SongID == b.BLK_Text)
+                            if (i.Id == b.BLK_Text)
                             { return true; }
                             break;
                         default:

@@ -106,7 +106,7 @@ namespace DMPlugin_DGJ
                             .Replace("[状态]", item.Status.String())
                             .Replace("[歌名]", item.SongName)
                             .Replace("[歌手]", item.SingersText)
-                            .Replace("[点歌人]", item.User);
+                            .Replace("[点歌人]", item.UserName);
 
                         middle += t;
                         i++;
@@ -127,7 +127,6 @@ namespace DMPlugin_DGJ
 
                 string output = "";
 
-                output += "搜索歌词：" + (Config.needLyric ? "是" : "否") + "\r\n";
                 output += "歌曲列表上限" + Config.maxSongCount.ToString() + "\r\n";
                 output += "播放音量：" + Config.songVol.ToString() + "\r\n";
 

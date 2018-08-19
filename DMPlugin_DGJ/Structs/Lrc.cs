@@ -8,7 +8,7 @@ namespace DMPlugin_DGJ
     /// <summary>
     /// 歌词
     /// </summary>
-    internal class Lrc
+    public class Lrc
     {
         /// <summary>
         /// 歌曲

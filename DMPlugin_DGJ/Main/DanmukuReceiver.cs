@@ -40,7 +40,7 @@ namespace DMPlugin_DGJ
                         if (num >= 0 && num < Center.Songs.Count)
                         {
                             SongItem item = Center.Songs[num];
-                            Log($"切掉了 {item.User} 点的 {item.SongName}", true);
+                            Log($"切掉了 {item.UserName} 点的 {item.SongName}", true);
                             switch (item.Status)
                             {
                                 case SongItem.SongStatus.WaitingDownload:
@@ -102,11 +102,11 @@ namespace DMPlugin_DGJ
                     else
                         Log("歌曲序号应该是数字", true);
                     return;
-                case "歌詞":
-                case "歌词":
-                    Config.needLyric ^= true;
-                    Log("歌词搜索已" + (Config.needLyric ? "启用" : "禁用"), true);
-                    return;
+                // case "歌詞":
+                // case "歌词":
+                //     Config.needLyric ^= true;
+                //     Log("歌词搜索已" + (Config.needLyric ? "启用" : "禁用"), true);
+                //     return;
                 case "保存配置":
                     Config.Save();
                     return;
@@ -127,18 +127,24 @@ namespace DMPlugin_DGJ
             {
                 case "點歌":
                 case "点歌":
-                    if (msgs.Length < 2)
-                        return;
-                    if (Center.Songs.Count < Config.maxSongCount)
                     {
+                        if (msgs.Length < 2)
+                            return;
+
                         if (Config.AdminOnly && !e.Danmaku.isAdmin)
                             return;
+
+                        if (!(Center.Songs.Count < Config.maxSongCount))
+                        {
+                            Log("点歌失败 列表曲目过多", true);
+                            return;
+                        }
 
                         if (!Config.CanMultiSong && !e.Danmaku.isAdmin)
                         {
                             foreach (SongItem s in Center.Songs)
                             {
-                                if (s.User == e.Danmaku.UserName)
+                                if (s.UserName == e.Danmaku.UserName)
                                 {
                                     Log($"点歌失败：{e.Danmaku.UserName}已有歌在列表中", true);
                                     return;
@@ -146,48 +152,55 @@ namespace DMPlugin_DGJ
                             }
                         }
 
-                        string what = "";
+                        string keyword = "";
                         int it = 0;
                         foreach (string str in msgs)
                         {
                             if (++it == 1)
                                 continue;
                             if (it != 2)
-                                what += " ";
-                            what += str;
+                                keyword += " ";
+                            keyword += str;
                         }
 
-                        SongItem i = Center.SearchSong(e.Danmaku.UserName, what);
+                        // SongItem i = Center.SearchSong(e.Danmaku.UserName, what);
+                        SongInfo info = Center.SearchSong(keyword);
 
-                        if (i != null)
+                        if (info == null)
                         {
-                            if (Center.isBlack(i))
-                            {
-                                Log($"歌曲“{i.SongName}”在黑名单中", true);
-                                return;
-                            }
-
-                            bool flag = true;
-                            foreach (SongItem s in Center.Songs)
-                                if (s.SongID == i.SongID && s.ModuleName == i.ModuleName)
-                                { flag = false; break; }
-                            if (flag)
-                            {
-                                Center.AddSong(i);
-                                Log("点歌成功 " + i.SongName, true);
-                            }
-                            else
-                            { Log("歌曲重复了", true); }
+                            Log($@"关键词 【{keyword}】 没有搜到歌曲", true);
+                            return;
                         }
+
+                        if (Center.IsInBlackList(info))
+                        {
+                            Log($"歌曲“{info.Name}”在黑名单中", true);
+                            return;
+                        }
+
+                        bool flag = true;
+                        foreach (SongItem s in Center.Songs)
+                            if (s.SongID == info.Id /*&& s.ModuleName == info.ModuleName*/)
+                            { flag = false; break; }
+
+                        if (flag)
+                        {
+                            Center.AddSong(new SongItem(info, e.Danmaku.UserName)); // FIXME
+                            Log("点歌成功 " + info.Name, true);
+                        }
+                        else
+                        {
+                            Log("歌曲重复了", true);
+                        }
+
+
+                        return;
                     }
-                    else
-                    { Log("点歌失败 列表曲目过多", true); }
-                    return;
                 case "取消點歌":
                 case "取消点歌":
                     SongItem item = null;
                     foreach (SongItem s in Center.Songs)
-                        if (s.User == e.Danmaku.UserName)
+                        if (s.UserName == e.Danmaku.UserName)
                             item = s;
                     if (item != null)
                     {

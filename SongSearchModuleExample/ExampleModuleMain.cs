@@ -14,14 +14,19 @@ namespace SongSearchModuleExample
             SetInfo("搜索模块名字", "搜索模块作者", "联系方式（报错时显示）", "搜索模块版本号", "搜索模块一句话介绍");
         }
 
-        protected override SongItem Search(string who, string what, bool needLyric = false)
+        protected override DownloadStatus Download(SongItem item)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        protected override int Download(SongItem item)
+        protected override string GetDownloadUrl(SongInfo songInfo)
         {
-            return base.Download(item);
+            throw new NotImplementedException();
+        }
+
+        protected override SongInfo Search(string keyword)
+        {
+            throw new NotImplementedException();
         }
     }
 }

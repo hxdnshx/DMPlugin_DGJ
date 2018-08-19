@@ -95,7 +95,7 @@
                         <TextBlock Margin="15,5" Text="注：修改播放设备后下一首歌生效"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <CheckBox Checked="needLyricChange" Unchecked="needLyricChange" x:Name="Check_Lyric" Visibility="Collapsed">启用歌词搜索</CheckBox>
+                        <!--<CheckBox Checked="needLyricChange" Unchecked="needLyricChange" x:Name="Check_Lyric" Visibility="Collapsed">启用歌词搜索</CheckBox>-->
                         <CheckBox Margin="50 0 20 0" Checked="needLyricChangeDisplay" Unchecked="needLyricChangeDisplay" x:Name="Check_LyricDisplay">显示歌词到侧边栏</CheckBox>
                         <TextBlock x:Name="DownloadStatus" Margin="15 0 0 0">下载状态：速度：0 kb/s 百分比：0% 大小：0 MB / 0 MB</TextBlock>
                     </StackPanel>
