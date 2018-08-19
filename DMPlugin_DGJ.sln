@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DMPlugin_DGJ", "DMPlugin_DGJ\DMPlugin_DGJ.csproj", "{70E4F3A0-99BA-454B-8BA4-4B501804B5E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongSearchModuleExample", "SongSearchModuleExample\SongSearchModuleExample.csproj", "{DC407142-7859-4FA9-B7F7-4329524F8E5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,12 @@ Global
 		{70E4F3A0-99BA-454B-8BA4-4B501804B5E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70E4F3A0-99BA-454B-8BA4-4B501804B5E8}.混淆输出|Any CPU.ActiveCfg = 混淆输出|Any CPU
 		{70E4F3A0-99BA-454B-8BA4-4B501804B5E8}.混淆输出|Any CPU.Build.0 = 混淆输出|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.混淆输出|Any CPU.ActiveCfg = Release|Any CPU
+		{DC407142-7859-4FA9-B7F7-4329524F8E5F}.混淆输出|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

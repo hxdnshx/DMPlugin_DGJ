@@ -55,7 +55,7 @@ namespace DMPlugin_DGJ
             if (m == null)
             { Module_Setting.Visibility = Visibility.Collapsed; }
             else
-            { Module_Setting.Visibility = m.NeedSettings ? Visibility.Visible : Visibility.Collapsed; }
+            { Module_Setting.Visibility = m.IsNeedSettings ? Visibility.Visible : Visibility.Collapsed; }
 
         }
 

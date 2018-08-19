@@ -24,20 +24,13 @@ namespace DMPlugin_DGJ
         /// 歌名
         /// </summary>
         public string SongName
-        { get { return _SongName; } }
-
-        internal string _SongName
-        { get; set; }
-
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲ID
         /// </summary>
         public string SongID
-        { get { return _SongID; } }
-
-        internal string _SongID
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// string的歌手列表
@@ -57,68 +50,47 @@ namespace DMPlugin_DGJ
         /// 歌手列表
         /// </summary>
         public string[] Singers
-        { get { return _Singers; } }
-
-        internal string[] _Singers
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 点歌人
         /// </summary>
         public string User
-        { get { return _User; } }
-
-        internal string _User
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 下载地址
         /// </summary>
         public string DownloadURL
-        { get { return _DownloadURL; } }
-
-        internal string _DownloadURL
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲文件储存路径
         /// </summary>
         public string FilePath
-        { get { return _FilePath; } }
-
-        internal string _FilePath
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 文本歌词
         /// </summary>
         public string Lyric
-        { get { return _Lyric; } }
-
-        internal string _Lyric
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲备注
         /// </summary>
         public string Note
-        { get { return _Note; } }
-
-        internal string _Note
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲状态
         /// </summary>
         public SongStatus Status
-        { get { return _Status; } }
+        { get; internal set; }
 
-        internal SongStatus _Status
-        { get; private set; }
-
-        internal void setStatus(SongStatus status)
+        internal void SetStatus(SongStatus status)
         {
-            _Status = status;
+            Status = status;
             RaisePropertyChanged("Status");
         }
         /// <summary>
@@ -146,15 +118,15 @@ namespace DMPlugin_DGJ
         /// <param name="_note">歌曲信息备注</param>
         private SongItem(SongsSearchModule _module, string _Name, string _ID, string _WhoWantThis, string[] _Singers, string _DownloadURL, string _lyric = "", string _note = "")
         {
-            _Status = SongStatus.WaitingDownload;
+            Status = SongStatus.WaitingDownload;
             Module = _module;
-            _SongName = _Name;
-            _SongID = _ID;
-            this._Singers = _Singers;
-            _User = _WhoWantThis;
-            this._DownloadURL = _DownloadURL;
-            _Lyric = _lyric;
-            _Note = _note;
+            SongName = _Name;
+            SongID = _ID;
+            Singers = _Singers;
+            User = _WhoWantThis;
+            DownloadURL = _DownloadURL;
+            Lyric = _lyric;
+            Note = _note;
 
             RaisePropertyChanged("");
         }
@@ -184,7 +156,7 @@ namespace DMPlugin_DGJ
         internal Lrc getFLyric(string lyric = "")
         {
             if (lyric == "")
-                lyric = _Lyric;
+                lyric = Lyric;
             if (lyric == "")
             {
                 _FLyric = null;

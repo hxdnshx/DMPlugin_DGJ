@@ -2,13 +2,13 @@
 {
     internal sealed class LwlApiXiami : LwlApiBaseModule
     {
-        private const string name = "虾米音乐";
-        private const string desc = "搜索虾米音乐的歌曲";
+        private const string NAME = "虾米音乐";
+        private const string DESCRIPTION = "搜索虾米音乐的歌曲";
 
         internal LwlApiXiami()
         {
             SetServiceName("xiami");
-            setInfo(INFO_PREFIX + name, INFO_AUTHOR, INFO_EMAIL, INFO_VERSION, desc, INFO_LYRIC);
+            SetInfo(INFO_PREFIX + NAME, INFO_AUTHOR, INFO_EMAIL, INFO_VERSION, DESCRIPTION);
         }
     }
 }

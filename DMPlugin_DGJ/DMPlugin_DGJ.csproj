@@ -101,6 +101,7 @@
     <Compile Include="LWLAPI\LwlApiXiami.cs" />
     <Compile Include="LWLAPI\LwlApiBaseModule.cs" />
     <Compile Include="Main\DefaultConfig.cs" />
+    <Compile Include="Structs\SongInfo.cs" />
     <Compile Include="Utils\API.cs" />
     <Compile Include="Structs\BlackInfoItem.cs" />
     <Compile Include="Main\Center.cs" />

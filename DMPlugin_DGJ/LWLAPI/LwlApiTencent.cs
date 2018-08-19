@@ -2,13 +2,13 @@
 {
     internal sealed class LwlApiTencent : LwlApiBaseModule
     {
-        private const string name = "QQ音乐";
-        private const string desc = "搜索QQ音乐的歌曲";
+        private const string NAME = "QQ音乐";
+        private const string DESCRIPTION = "搜索QQ音乐的歌曲";
 
         internal LwlApiTencent()
         {
             SetServiceName("tencent");
-            setInfo(INFO_PREFIX + name, INFO_AUTHOR, INFO_EMAIL, INFO_VERSION, desc, INFO_LYRIC);
+            SetInfo(INFO_PREFIX + NAME, INFO_AUTHOR, INFO_EMAIL, INFO_VERSION, DESCRIPTION);
         }
     }
 }

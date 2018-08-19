@@ -39,9 +39,9 @@ namespace DMPlugin_DGJ
 
                 foreach (SongItem item in Center.Songs)
                 {
-                    if (item._Status == SongItem.SongStatus.WaitingDownload)
+                    if (item.Status == SongItem.SongStatus.WaitingDownload)
                     {
-                        item._FilePath = Config.SongsCachePath + "\\" + GenFileName(item);
+                        item.FilePath = Config.SongsCachePath + "\\" + GenFileName(item);
                         Download(item);
 
                         goto done;
@@ -55,8 +55,8 @@ namespace DMPlugin_DGJ
         private static string GenFileName(SongItem item)
         {
             string s = item.ModuleName;
-            s += item._SongID;
-            s += item._SongName;
+            s += item.SongID;
+            s += item.SongName;
             DateTime d = DateTime.Now;
             s += d.Hour.ToString() + d.Minute.ToString() + d.Second.ToString();
 
@@ -77,16 +77,16 @@ namespace DMPlugin_DGJ
             catch (Exception) { }
 
             dlItem = item;
-            dlItem.setStatus(SongItem.SongStatus.Downloading);
+            dlItem.SetStatus(SongItem.SongStatus.Downloading);
 
-            if (item.Module.HandleDownlaod) // 如果搜索模块负责下载文件
+            if (item.Module.IsHandleDownlaod) // 如果搜索模块负责下载文件
             {
                 Center.Mainw.setDownloadStatus("由搜索模块负责下载中");
                 switch (item.Module.SafeDownload(item))
                 {
                     case 1: // 下载成功
-                        dlItem.setStatus(SongItem.SongStatus.WaitingPlay);
-                        Center.Logg("歌曲下载 下载成功：" + item._SongName);
+                        dlItem.SetStatus(SongItem.SongStatus.WaitingPlay);
+                        Center.Logg("歌曲下载 下载成功：" + item.SongName);
                         Center.Mainw.setDownloadStatus("搜索模块返回下载成功");
                         return;
                     case 0: // 下载失败 错误信息由module输出
@@ -108,7 +108,7 @@ namespace DMPlugin_DGJ
                     sw.Reset();
                     lastUpdateDownloadedSize = 0;
                     lastUpdateTime = DateTime.Now;
-                    wc.DownloadFileAsync(new Uri(item._DownloadURL), item._FilePath);
+                    wc.DownloadFileAsync(new Uri(item.DownloadURL), item.FilePath);
                     Center.Mainw.setDownloadStatus("正在连接服务器");
                     sw.Start();
                     DownloadWatchDog.Start();
@@ -117,7 +117,7 @@ namespace DMPlugin_DGJ
                 catch (Exception ex)
                 {
                     sw.Reset();
-                    Center.Logg("下载歌曲" + item._SongName + "出错：" + ex.Message, true, true);
+                    Center.Logg("下载歌曲" + item.SongName + "出错：" + ex.Message, true, true);
                     Center.Mainw.setDownloadStatus("下载失败：" + ex.Message);
                 }
 
@@ -186,9 +186,9 @@ namespace DMPlugin_DGJ
 
             if (sucFlag)
             {
-                Center.Logg("歌曲下载 下载成功：" + dlItem._SongName, false, true);
+                Center.Logg("歌曲下载 下载成功：" + dlItem.SongName, false, true);
                 Center.Mainw.setDownloadStatus("下载完毕");
-                dlItem.setStatus(SongItem.SongStatus.WaitingPlay);
+                dlItem.SetStatus(SongItem.SongStatus.WaitingPlay);
             }
             else
             { Center.RemoveSong(dlItem); }
