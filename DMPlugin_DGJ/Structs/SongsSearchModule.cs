@@ -103,31 +103,14 @@ namespace DMPlugin_DGJ
             }
             catch (Exception ex)
             {
-                try
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
-                    {
-                        outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
-                        outfile.WriteLine("参数：" + keyword);
-                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
-                        outfile.Write(ex.ToString());
-                        new Thread(() =>
-                        {
-                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
-日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
-                        }).Start();
-                    }
-                }
-                catch (Exception)
-                { }
+                WriteError(ex, "keyword: " + keyword);
                 return null;
             }
         }
 
-        protected abstract string GetDownloadUrl(SongInfo songInfo);
+        protected abstract string GetDownloadUrl(SongItem songInfo);
 
-        internal string SafeGetDownloadUrl(SongInfo songInfo)
+        internal string SafeGetDownloadUrl(SongItem songInfo)
         {
             try
             {
@@ -135,24 +118,7 @@ namespace DMPlugin_DGJ
             }
             catch (Exception ex)
             {
-                try
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
-                    {
-                        outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
-                        outfile.WriteLine("参数：" + songInfo.Id);
-                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
-                        outfile.Write(ex.ToString());
-                        new Thread(() =>
-                        {
-                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
-日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
-                        }).Start();
-                    }
-                }
-                catch (Exception)
-                { }
+                WriteError(ex, "SongId: " + songInfo.SongId);
                 return null;
             }
         }
@@ -177,24 +143,7 @@ namespace DMPlugin_DGJ
             }
             catch (Exception ex)
             {
-                try
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
-                    {
-                        outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
-                        outfile.WriteLine("参数：filepath=" + item.FilePath + " url=" + item.DownloadURL + " id=" + item.SongID);
-                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
-                        outfile.Write(ex.ToString());
-                        new Thread(() =>
-                        {
-                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
-日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
-                        }).Start();
-                    }
-                }
-                catch (Exception)
-                { }
+                WriteError(ex, "参数：filepath=" + item.FilePath + " id=" + item.SongId);
                 return DownloadStatus.Failed;
             }
         }
@@ -217,26 +166,12 @@ namespace DMPlugin_DGJ
             new Thread(() =>
             {
                 try
-                { Setting(); }
+                {
+                    Setting();
+                }
                 catch (Exception ex)
                 {
-                    try
-                    {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
-                        {
-                            outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
-                            outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
-                            outfile.Write(ex.ToString());
-                            new Thread(() =>
-                            {
-                                System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
-日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
-                            }).Start();
-                        }
-                    }
-                    catch (Exception)
-                    { }
+                    WriteError(ex, "Settings");
                 }
             })
             { Name = "ModuleSafeSetting", IsBackground = true }.Start();
@@ -276,6 +211,28 @@ namespace DMPlugin_DGJ
                     plugin.AddDM(text);
                 }
             }
+        }
+
+        private void WriteError(Exception exception, string description)
+        {
+            try
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
+                {
+                    outfile.WriteLine("请将错误报告发给 " + ModuleAuthor + " 谢谢，联系方式：" + ModuleContact);
+                    outfile.WriteLine(description);
+                    outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
+                    outfile.Write(exception.ToString());
+                    new Thread(() =>
+                    {
+                        System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
+日志已经保存在桌面,请发给引擎作者 " + ModuleAuthor + ", 联系方式：" + ModuleContact);
+                    }).Start();
+                }
+            }
+            catch (Exception)
+            { }
         }
 
         public enum DownloadStatus

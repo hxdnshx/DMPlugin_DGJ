@@ -80,7 +80,7 @@ namespace DMPlugin_DGJ
             using (StreamWriter outfile = new StreamWriter(path + @"\点歌姬播放错误报告.txt"))
             {
                 outfile.WriteLine("播放错误日志 **请将本文件发给宅急送队长** 本地时间：" + DateTime.Now.ToString());
-                outfile.WriteLine($"歌曲信息 歌名：{song.SongName}；歌手：{song.SingersText}；歌曲ID：{song.SongID}；");
+                outfile.WriteLine($"歌曲信息 歌名：{song.SongName}；歌手：{song.SingersText}；歌曲ID：{song.SongId}；");
                 outfile.WriteLine("歌曲文件路径：" + song.FilePath);
                 outfile.WriteLine($"搜索模块信息 名称：{song.Module.ModuleName}；作者：{song.Module.ModuleAuthor}；联系方式：{song.Module.ModuleContact}");
                 outfile.WriteLine("--------------");

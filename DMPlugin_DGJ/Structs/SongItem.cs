@@ -23,7 +23,7 @@ namespace DMPlugin_DGJ
         /// <summary>
         /// 歌曲ID
         /// </summary>
-        public string SongID
+        public string SongId
         { get; internal set; }
 
         /// <summary>
@@ -94,6 +94,8 @@ namespace DMPlugin_DGJ
             RaisePropertyChanged("Status");
         }
 
+        internal string GetDownloadUrl() => Module.SafeGetDownloadUrl(this);
+
         /// <summary>
         /// 
         /// </summary>
@@ -119,7 +121,7 @@ namespace DMPlugin_DGJ
             UserName = userName;
 
             Module = songInfo.Module;
-            SongID = songInfo.Id;
+            SongId = songInfo.Id;
             SongName = songInfo.Name;
             Singers = songInfo.Singers;
             Lyric = Lrc.InitLrc(songInfo.Lyric);

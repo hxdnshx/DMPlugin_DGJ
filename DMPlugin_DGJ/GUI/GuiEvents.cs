@@ -95,7 +95,7 @@ namespace DMPlugin_DGJ
             InputDialog i = new InputDialog("歌曲名字：", string.Empty, "添加歌曲");
             if (i.ShowDialog() == true && i.Answer != string.Empty)
             {
-                SongInfo songInfo = searchModule.SafeSearch(System.Web.HttpUtility.UrlEncode(i.Answer));
+                SongInfo songInfo = searchModule.SafeSearch(i.Answer);
                 if (songInfo != null)
                 {
                     Center.AddSong(new SongItem(songInfo, Config.MASTER_NAME));

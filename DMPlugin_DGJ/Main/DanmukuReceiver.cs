@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace DMPlugin_DGJ
@@ -168,7 +169,7 @@ namespace DMPlugin_DGJ
 
                         if (info == null)
                         {
-                            Log($@"关键词 【{keyword}】 没有搜到歌曲", true);
+                            Log($@"关键词【{keyword}】没有搜到歌曲", true);
                             return;
                         }
 
@@ -178,22 +179,15 @@ namespace DMPlugin_DGJ
                             return;
                         }
 
-                        bool flag = true;
-                        foreach (SongItem s in Center.Songs)
-                            if (s.SongID == info.Id /*&& s.ModuleName == info.ModuleName*/)
-                            { flag = false; break; }
-
-                        if (flag)
+                        if (Center.Songs.Any(x => x.SongId == info.Id && x.Module == info.Module))
                         {
-                            Center.AddSong(new SongItem(info, e.Danmaku.UserName)); // FIXME
+                            Center.AddSong(new SongItem(info, e.Danmaku.UserName));
                             Log("点歌成功 " + info.Name, true);
                         }
                         else
                         {
                             Log("歌曲重复了", true);
                         }
-
-
                         return;
                     }
                 case "取消點歌":

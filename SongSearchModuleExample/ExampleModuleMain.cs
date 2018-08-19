@@ -19,7 +19,7 @@ namespace SongSearchModuleExample
             throw new NotImplementedException();
         }
 
-        protected override string GetDownloadUrl(SongInfo songInfo)
+        protected override string GetDownloadUrl(SongItem songInfo)
         {
             throw new NotImplementedException();
         }

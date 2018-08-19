@@ -192,7 +192,7 @@ namespace DMPlugin_DGJ
             catch (Exception) { }
 
             if (Config.DisplayLyric && nowlrc != string.Empty)
-            { Center.fakeDM("歌词", nowlrc); }
+            { Center.FakeDM("歌词", nowlrc); }
 
             if (Center.Mainw != null)
             {

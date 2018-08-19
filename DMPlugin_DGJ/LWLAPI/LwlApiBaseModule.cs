@@ -29,7 +29,7 @@ namespace DMPlugin_DGJ.LWLAPI
             string result_str;
             try
             {
-                result_str = Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/search?keyword={keyword}");
+                result_str = Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/search?keyword={System.Web.HttpUtility.UrlEncode(keyword)}");
             }
             catch (Exception ex)
             {
@@ -52,51 +52,46 @@ namespace DMPlugin_DGJ.LWLAPI
                 return null;
             }
 
-            string songid = "";
-            string songname = "";
-            string[] songartists;
-            string url = "";
-            string lyric = "";
+            SongInfo songInfo;
+
 
             try
             {
-                songid = song["id"].ToString();
-                songname = song["name"].ToString();
-                songartists = (song["artist"] as JArray).ToArray().Select(x => x.ToString()).ToArray();
+                songInfo = new SongInfo(
+                    this,
+                    song["id"].ToString(),
+                    song["name"].ToString(),
+                    (song["artist"] as JArray).ToArray().Select(x => x.ToString()).ToArray()
+                );
             }
             catch (Exception ex)
             { Log("歌曲信息获取结果错误：" + ex.Message); return null; }
 
             try
             {
-                JObject lobj = JObject.Parse(Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/lyric?id={songid}"));
+                JObject lobj = JObject.Parse(Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/lyric?id={songInfo.Id}"));
                 if (lobj["result"]["lwlyric"] != null)
                 {
-                    lyric = lobj["result"]["lwlyric"].ToString();
+                    songInfo.Lyric = lobj["result"]["lwlyric"].ToString();
                 }
                 else if (lobj["result"]["lyric"] != null)
                 {
-                    lyric = lobj["result"]["lyric"].ToString();
+                    songInfo.Lyric = lobj["result"]["lyric"].ToString();
                 }
                 else
-                { Log("歌词获取错误(id:" + songid + ")"); }
+                { Log("歌词获取错误(id:" + songInfo.Id + ")"); }
             }
             catch (Exception ex)
-            { Log("歌词获取错误(ex:" + ex.ToString() + ",id:" + songid + ")"); }
+            { Log("歌词获取错误(ex:" + ex.ToString() + ",id:" + songInfo.Id + ")"); }
 
-            return new SongInfo(this, songid, songname, songartists)
-            {
-                Lyric = lyric
-            };
-
-            // return SongItem.init(this, songname, songid, who, songartists, url, lyric);
+            return songInfo;
         }
 
-        protected override string GetDownloadUrl(SongInfo songInfo)
+        protected override string GetDownloadUrl(SongItem songInfo)
         {
             try
             {
-                JObject dlurlobj = JObject.Parse(Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/song?id={songInfo.Id}"));
+                JObject dlurlobj = JObject.Parse(Fetch(API_PROTOCOL, API_HOST, API_PATH + ServiceName + $"/song?id={songInfo.SongId}"));
 
                 if (dlurlobj["code"].ToString() == "200")
                 {
@@ -104,13 +99,13 @@ namespace DMPlugin_DGJ.LWLAPI
                 }
                 else
                 {
-                    Log($"歌曲 {songInfo.Name} 因为版权不能下载");
+                    Log($"歌曲 {songInfo.SongName} 因为版权不能下载");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                Log($"歌曲 {songInfo.Name} 疑似版权不能下载(ex:{ex.Message})");
+                Log($"歌曲 {songInfo.SongName} 疑似版权不能下载(ex:{ex.Message})");
                 return null;
             }
         }
