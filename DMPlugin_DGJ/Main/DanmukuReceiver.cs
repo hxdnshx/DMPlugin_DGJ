@@ -179,7 +179,7 @@ namespace DMPlugin_DGJ
                             return;
                         }
 
-                        if (Center.Songs.Any(x => x.SongId == info.Id && x.Module == info.Module))
+                        if (!Center.Songs.Any(x => x.SongId == info.Id && x.Module == info.Module))
                         {
                             Center.AddSong(new SongItem(info, e.Danmaku.UserName));
                             Log("点歌成功 " + info.Name, true);

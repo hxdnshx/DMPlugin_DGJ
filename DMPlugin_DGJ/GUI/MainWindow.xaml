@@ -116,7 +116,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Status,Converter={StaticResource GuiConverter}}" Header="歌曲状态"/>
                         <DataGridTextColumn Binding="{Binding SongName}" ClipboardContentBinding="{Binding SongName}" Header="歌名"/>
-                        <DataGridTextColumn Binding="{Binding User}" ClipboardContentBinding="{Binding User}" Header="点歌人"/>
+                        <DataGridTextColumn Binding="{Binding UserName}" ClipboardContentBinding="{Binding User}" Header="点歌人"/>
                         <DataGridTextColumn Binding="{Binding ModuleName}" ClipboardContentBinding="{Binding ModuleName}" Header="搜索模块"/>
                         <DataGridTextColumn Binding="{Binding SingersText}" ClipboardContentBinding="{Binding SingersText}" Header="歌手列表"/>
                         <DataGridTextColumn Binding="{Binding Note}" ClipboardContentBinding="{Binding Note}" Header="备注信息"/>
@@ -189,10 +189,9 @@
                           SelectionMode="Single" SelectionUnit="FullRow" d:DataContext="{d:DesignInstance DGJ:SongsSearchModule}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="名称" Binding="{Binding ModuleName}"/>
-                            <DataGridTextColumn Header="作者" Binding="{Binding ModuleAuther}"/>
-                            <DataGridTextColumn Header="说明" Binding="{Binding ModuleDesc}"/>
-                            <DataGridTextColumn Header="版本号" Binding="{Binding Version}"/>
-                            <DataGridTextColumn Header="歌词支持" Binding="{Binding SuppLyric,Converter={StaticResource GuiConverter}}"/>
+                            <DataGridTextColumn Header="作者" Binding="{Binding ModuleAuthor}"/>
+                            <DataGridTextColumn Header="说明" Binding="{Binding ModuleDescription}"/>
+                            <DataGridTextColumn Header="版本号" Binding="{Binding ModuleVersion}"/>
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
