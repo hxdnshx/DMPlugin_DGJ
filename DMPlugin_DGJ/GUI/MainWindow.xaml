@@ -372,7 +372,7 @@
                         </StackPanel>
                         <StackPanel Margin="5" Orientation="Horizontal">
                             <ToggleButton x:Name="Setting_BroadcasterLoop" Checked="Set_BL_Change" Unchecked="Set_BL_Change"/>
-                            <TextBlock Margin="10 0 0 0">播主的点歌播放完毕后再次加入列表末尾</TextBlock>
+                            <TextBlock Margin="10 0 0 0">主播的点歌播放完毕后再次加入列表末尾</TextBlock>
                         </StackPanel>
                     </StackPanel>
                     <Rectangle Grid.Column="1" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Gray" />

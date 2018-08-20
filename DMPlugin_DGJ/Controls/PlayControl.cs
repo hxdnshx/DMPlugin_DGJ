@@ -65,7 +65,7 @@ namespace DMPlugin_DGJ
                             playNotDone = false;
                             UnLoad();
                             RemoveSong(iitem);
-                            if (Config.BroadcasterLoop && iitem.UserName == "播主")
+                            if (Config.BroadcasterLoop && iitem.UserName == Config.MASTER_NAME)
                             {
                                 iitem.SetStatus(SongItem.SongStatus.WaitingDownload);
                                 Center.AddSong(iitem);

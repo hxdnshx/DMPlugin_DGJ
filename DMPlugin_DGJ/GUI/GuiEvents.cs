@@ -95,7 +95,7 @@ namespace DMPlugin_DGJ
                 string searchStr = i.Answer;
                 Task.Run(() =>
                 {
-                    var result = item.SafeGetPlaylist("播主", System.Web.HttpUtility.UrlEncode(searchStr), true);
+                    var result = item.SafeGetPlaylist(Config.MASTER_NAME, System.Web.HttpUtility.UrlEncode(searchStr), true);
                     if (result == null)
                     {
                         MessageBox.Show($"未找到对应的歌单：{i.Answer}", "提示");
