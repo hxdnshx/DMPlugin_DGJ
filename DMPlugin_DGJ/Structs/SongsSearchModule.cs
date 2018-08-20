@@ -153,24 +153,7 @@ namespace DMPlugin_DGJ
             }
             catch (Exception ex)
             {
-                try
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    using (StreamWriter outfile = new StreamWriter(path + @"\B站彈幕姬点歌姬歌曲搜索引擎" + ModuleName + "错误报告.txt"))
-                    {
-                        outfile.WriteLine("请将错误报告发给 " + ModuleAuther + " 谢谢，联系方式：" + ModuleCont);
-                        outfile.WriteLine("参数：who=" + who + " what=" + keyword + " needLyric=" + (needLyric ? "true" : "false"));
-                        outfile.WriteLine(ModuleName + " 本地时间：" + DateTime.Now.ToString());
-                        outfile.Write(ex.ToString());
-                        new Thread(() =>
-                        {
-                            System.Windows.MessageBox.Show("点歌姬歌曲搜索引擎“" + ModuleName + @"”遇到了未处理的错误
-日志已经保存在桌面,请发给引擎作者 " + ModuleAuther + ", 联系方式：" + ModuleCont);
-                        }).Start();
-                    }
-                }
-                catch (Exception)
-                { }
+                WriteError(ex, "keyword: " + keyword);
                 return null;
             }
         }
