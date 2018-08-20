@@ -21,23 +21,16 @@ namespace DMPlugin_DGJ
         { get; set; }
 
         /// <summary>
+        /// 歌曲ID
+        /// </summary>
+        public string SongId
+        { get; internal set; }
+
+        /// <summary>
         /// 歌名
         /// </summary>
         public string SongName
-        { get { return _SongName; } }
-
-        internal string _SongName
-        { get; set; }
-
-
-        /// <summary>
-        /// 歌曲ID
-        /// </summary>
-        public string SongID
-        { get { return _SongID; } }
-
-        internal string _SongID
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// string的歌手列表
@@ -57,74 +50,51 @@ namespace DMPlugin_DGJ
         /// 歌手列表
         /// </summary>
         public string[] Singers
-        { get { return _Singers; } }
-
-        internal string[] _Singers
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 点歌人
         /// </summary>
-        public string User
-        { get { return _User; } }
+        public string UserName
+        { get; internal set; }
 
-        internal string _User
-        { get; set; }
-
-        /// <summary>
+        // /// <summary>
         /// 下载地址
         /// </summary>
-        public string DownloadURL
-        { get { return _DownloadURL; } }
-
-        internal string _DownloadURL
-        { get; set; }
+        // public string DownloadURL
+        // { get; internal set; }
 
         /// <summary>
         /// 歌曲文件储存路径
         /// </summary>
         public string FilePath
-        { get { return _FilePath; } }
-
-        internal string _FilePath
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 文本歌词
         /// </summary>
-        public string Lyric
-        { get { return _Lyric; } }
-
-        internal string _Lyric
-        { get; set; }
+        public Lrc Lyric
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲备注
         /// </summary>
         public string Note
-        { get { return _Note; } }
-
-        internal string _Note
-        { get; set; }
+        { get; internal set; }
 
         /// <summary>
         /// 歌曲状态
         /// </summary>
         public SongStatus Status
-        { get { return _Status; } }
-
-        internal SongStatus _Status
         { get; private set; }
 
-        internal void setStatus(SongStatus status)
+        internal void SetStatus(SongStatus status)
         {
-            _Status = status;
+            Status = status;
             RaisePropertyChanged("Status");
         }
-        /// <summary>
-        /// 格式化后的歌词
-        /// </summary>
-        internal Lrc _FLyric = null;
+
+        internal string GetDownloadUrl() => Module.SafeGetDownloadUrl(this);
 
         /// <summary>
         /// 
@@ -144,57 +114,21 @@ namespace DMPlugin_DGJ
         /// <param name="_DownloadURL">下载地址</param>
         /// <param name="_lyric">文本格式歌词</param>
         /// <param name="_note">歌曲信息备注</param>
-        private SongItem(SongsSearchModule _module, string _Name, string _ID, string _WhoWantThis, string[] _Singers, string _DownloadURL, string _lyric = "", string _note = "")
+        internal SongItem(SongInfo songInfo, string userName)
         {
-            _Status = SongStatus.WaitingDownload;
-            Module = _module;
-            _SongName = _Name;
-            _SongID = _ID;
-            this._Singers = _Singers;
-            _User = _WhoWantThis;
-            this._DownloadURL = _DownloadURL;
-            _Lyric = _lyric;
-            _Note = _note;
+            Status = SongStatus.WaitingDownload;
+
+            UserName = userName;
+
+            Module = songInfo.Module;
+            SongId = songInfo.Id;
+            SongName = songInfo.Name;
+            Singers = songInfo.Singers;
+            Lyric = Lrc.InitLrc(songInfo.Lyric);
+            Note = songInfo.Note;
+            // DownloadURL = _DownloadURL;
 
             RaisePropertyChanged("");
-        }
-
-        /// <summary>
-        /// 创建一个歌曲信息
-        /// </summary>
-        /// <param name="module">创建歌曲信息的搜素模块</param>
-        /// <param name="Name">歌曲名称</param>
-        /// <param name="ID">歌曲ID</param>
-        /// <param name="Who">点歌人昵称</param>
-        /// <param name="Singers">歌手</param>
-        /// <param name="DownloadURL">MP3下载地址</param>
-        /// <param name="lyric">歌词文本</param>
-        /// <param name="note">备注</param>
-        /// <returns></returns>
-        public static SongItem init(SongsSearchModule module, string Name, string ID, string Who, string[] Singers, string DownloadURL, string lyric = "", string note = "")
-        {
-            return new SongItem(module, Name, ID, Who, Singers, DownloadURL, lyric, note);
-        }
-
-        /// <summary>
-        /// 从文本歌词解析歌词
-        /// </summary>
-        /// <param name="lyric"></param>
-        /// <returns>结果</returns>
-        internal Lrc getFLyric(string lyric = "")
-        {
-            if (lyric == "")
-                lyric = _Lyric;
-            if (lyric == "")
-            {
-                _FLyric = null;
-            }
-            else
-            {
-                Lrc l = Lrc.InitLrc(lyric);
-                _FLyric = l;
-            }
-            return _FLyric;
         }
 
         /// <summary>

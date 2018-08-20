@@ -43,9 +43,9 @@ namespace DMPlugin_DGJ
 
                 foreach (SongItem iitem in Center.Songs)
                 {
-                    if (iitem._Status == SongItem.SongStatus.WaitingPlay)
+                    if (iitem.Status == SongItem.SongStatus.WaitingPlay)
                     {
-                        iitem.setStatus(SongItem.SongStatus.Playing);
+                        iitem.SetStatus(SongItem.SongStatus.Playing);
                         playNotDone = true;
 
                         try
@@ -85,9 +85,9 @@ namespace DMPlugin_DGJ
             using (StreamWriter outfile = new StreamWriter(path + @"\点歌姬播放错误报告.txt"))
             {
                 outfile.WriteLine("播放错误日志 **请将本文件发给宅急送队长** 本地时间：" + DateTime.Now.ToString());
-                outfile.WriteLine($"歌曲信息 歌名：{song.SongName}；歌手：{song.SingersText}；歌曲ID：{song.SongID}；");
+                outfile.WriteLine($"歌曲信息 歌名：{song.SongName}；歌手：{song.SingersText}；歌曲ID：{song.SongId}；");
                 outfile.WriteLine("歌曲文件路径：" + song.FilePath);
-                outfile.WriteLine($"搜索模块信息 名称：{song.Module.ModuleName}；作者：{song.Module.ModuleAuther}；联系方式：{song.Module.ModuleCont}；歌词支持：{song.Module.SuppLyric.ToString()}；");
+                outfile.WriteLine($"搜索模块信息 名称：{song.Module.ModuleName}；作者：{song.Module.ModuleAuthor}；联系方式：{song.Module.ModuleContact}");
                 outfile.WriteLine("--------------");
                 outfile.Write(ex.ToString());
             }
@@ -112,7 +112,7 @@ namespace DMPlugin_DGJ
 
             waveout = Create();
 
-            FileReader = new Mp3FileReader(itemm._FilePath);
+            FileReader = new Mp3FileReader(itemm.FilePath);
 
             var sampleChannel = new SampleChannel(FileReader, true);
             setVolumeDelegate = vol => sampleChannel.Volume = vol;
@@ -123,7 +123,7 @@ namespace DMPlugin_DGJ
             waveout.PlaybackStopped += Waveout_PlaybackStopped;
             SetVol();
 
-            lrc = itemm._FLyric ?? itemm.getFLyric();
+            lrc = itemm.Lyric;
         }
 
         private static IWavePlayer Create()
@@ -258,7 +258,7 @@ namespace DMPlugin_DGJ
         {
             try
             {
-                File.Delete(song._FilePath);
+                File.Delete(song.FilePath);
             }
             catch (System.Exception ex)
             {

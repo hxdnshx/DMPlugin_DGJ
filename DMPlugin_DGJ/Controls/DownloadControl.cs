@@ -10,9 +10,9 @@ namespace DMPlugin_DGJ
     internal class DownloadControl
     {
         private static Thread thr = null;
-        private static WebClient wc;
+        private static WebClient webClient;
 
-        private static Stopwatch sw = new Stopwatch(); // 用于计算下载速度
+        private static Stopwatch downloadSpeedStopwatch = new Stopwatch(); // 用于计算下载速度
         private static long lastUpdateDownloadedSize = 0; // 上次更新的下载大小，用于计算实时下载速度
         private static DateTime lastUpdateTime; // 上次更新的时间，用于计算实时下载速度
         private static object downloadSpeedLock = new object();
@@ -27,11 +27,11 @@ namespace DMPlugin_DGJ
                 if (thr.IsAlive)
                 { thr.Abort(); }
             }
-            thr = new Thread(loop) { Name = "DownloadLoop", IsBackground = true };
+            thr = new Thread(Loop) { Name = "DownloadLoop", IsBackground = true };
             thr.Start();
         }
 
-        private static void loop()
+        private static void Loop()
         {
             while (true)
             {
@@ -39,9 +39,9 @@ namespace DMPlugin_DGJ
 
                 foreach (SongItem item in Center.Songs)
                 {
-                    if (item._Status == SongItem.SongStatus.WaitingDownload)
+                    if (item.Status == SongItem.SongStatus.WaitingDownload)
                     {
-                        item._FilePath = Config.SongsCachePath + "\\" + GenFileName(item);
+                        item.FilePath = Config.SongsCachePath + "\\" + GenFileName(item);
                         Download(item);
 
                         goto done;
@@ -55,8 +55,8 @@ namespace DMPlugin_DGJ
         private static string GenFileName(SongItem item)
         {
             string s = item.ModuleName;
-            s += item._SongID;
-            s += item._SongName;
+            s += item.SongId;
+            s += item.SongName;
             DateTime d = DateTime.Now;
             s += d.Hour.ToString() + d.Minute.ToString() + d.Second.ToString();
 
@@ -70,55 +70,56 @@ namespace DMPlugin_DGJ
             return r.Replace(path, string.Empty);
         }
 
-        private static void Download(SongItem item)
+        private static void Download(SongItem songItem)
         {
             try
             { Directory.CreateDirectory(Config.SongsCachePath); }
             catch (Exception) { }
 
-            dlItem = item;
-            dlItem.setStatus(SongItem.SongStatus.Downloading);
+            dlItem = songItem;
+            dlItem.SetStatus(SongItem.SongStatus.Downloading);
 
-            if (item.Module.HandleDownlaod) // 如果搜索模块负责下载文件
+            if (dlItem.Module.IsHandleDownlaod) // 如果搜索模块负责下载文件
             {
                 Center.Mainw.setDownloadStatus("由搜索模块负责下载中");
-                switch (item.Module.SafeDownload(item))
+                switch (dlItem.Module.SafeDownload(dlItem))
                 {
-                    case 1: // 下载成功
-                        dlItem.setStatus(SongItem.SongStatus.WaitingPlay);
-                        Center.Logg("歌曲下载 下载成功：" + item._SongName);
+                    case SongsSearchModule.DownloadStatus.Success: // 下载成功
+                        dlItem.SetStatus(SongItem.SongStatus.WaitingPlay);
+                        Center.Logg("歌曲下载 下载成功：" + dlItem.SongName);
                         Center.Mainw.setDownloadStatus("搜索模块返回下载成功");
                         return;
-                    case 0: // 下载失败 错误信息由module输出
-                    default:
-                        Center.RemoveSong(item);
+                    default: // 下载失败 错误信息由module输出
+                        Center.RemoveSong(dlItem);
                         Center.Mainw.setDownloadStatus("搜索模块返回下载失败");
                         return;
                 }
             }
             else // 如果搜索模块不负责下载文件
             {
-                wc = new WebClient();
-
-                wc.DownloadProgressChanged += onDownloadProgressChanged;
-                wc.DownloadFileCompleted += onDownloadFileCompleted;
-                wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.450 Safari/537.35");
                 try
                 {
-                    sw.Reset();
+                    webClient = new WebClient();
+                    webClient.DownloadProgressChanged += OnDownloadProgressChanged;
+                    webClient.DownloadFileCompleted += OnDownloadFileCompleted;
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.450 Safari/537.35");
+
+                    downloadSpeedStopwatch.Reset();
                     lastUpdateDownloadedSize = 0;
                     lastUpdateTime = DateTime.Now;
-                    wc.DownloadFileAsync(new Uri(item._DownloadURL), item._FilePath);
+
+                    webClient.DownloadFileAsync(new Uri(dlItem.GetDownloadUrl()), dlItem.FilePath);
                     Center.Mainw.setDownloadStatus("正在连接服务器");
-                    sw.Start();
+                    downloadSpeedStopwatch.Start();
                     DownloadWatchDog.Start();
                     downloadFlag = true; // 正在下载歌曲
                 }
                 catch (Exception ex)
                 {
-                    sw.Reset();
-                    Center.Logg("下载歌曲" + item._SongName + "出错：" + ex.Message, true, true);
+                    downloadSpeedStopwatch.Reset();
+                    Center.Logg("下载歌曲" + dlItem.SongName + "出错：" + ex.Message, true, true);
                     Center.Mainw.setDownloadStatus("下载失败：" + ex.Message);
+                    Center.RemoveSong(dlItem);
                 }
 
                 while (downloadFlag)
@@ -133,9 +134,9 @@ namespace DMPlugin_DGJ
         /// 取消正在进行的下载
         /// </summary>
         internal static void CancelDownload()
-        { wc?.CancelAsync(); }
+        { webClient?.CancelAsync(); }
 
-        private static void onDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private static void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             //lock(downloadSpeedLock)
             //{
@@ -151,7 +152,7 @@ namespace DMPlugin_DGJ
             int speed_now = (int)Math.Floor(sizeDiff / timeDiff);
 
             // 计算平均下载速度
-            string speed_avg = string.Format("{0} kb/s", (e.BytesReceived / 1024d / sw.Elapsed.TotalSeconds).ToString("0.00"));
+            string speed_avg = string.Format("{0} kb/s", (e.BytesReceived / 1024d / downloadSpeedStopwatch.Elapsed.TotalSeconds).ToString("0.00"));
 
             // 下载内容百分比
             string baifenbi = e.ProgressPercentage.ToString() + "%";
@@ -165,7 +166,7 @@ namespace DMPlugin_DGJ
             //}
         }
 
-        private static void onDownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private static void OnDownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             bool sucFlag = true;
             if (e.Cancelled)
@@ -186,14 +187,16 @@ namespace DMPlugin_DGJ
 
             if (sucFlag)
             {
-                Center.Logg("歌曲下载 下载成功：" + dlItem._SongName, false, true);
+                Center.Logg("歌曲下载 下载成功：" + dlItem.SongName, false, true);
                 Center.Mainw.setDownloadStatus("下载完毕");
-                dlItem.setStatus(SongItem.SongStatus.WaitingPlay);
+                dlItem.SetStatus(SongItem.SongStatus.WaitingPlay);
             }
             else
-            { Center.RemoveSong(dlItem); }
+            {
+                Center.RemoveSong(dlItem);
+            }
             DownloadWatchDog.Stop();
-            wc = null;
+            webClient = null;
             downloadFlag = false; // 允许进行下一首歌的下载
         }
     }

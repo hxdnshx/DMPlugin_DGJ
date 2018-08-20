@@ -7,12 +7,12 @@ namespace DMPlugin_DGJ
 {
     internal static partial class Center
     {
-
         internal static readonly string Plg_name = "点歌姬";
         internal static readonly string Plg_auth = "宅急送队长";
         internal static readonly string Plg_ver = "2.0.1";
         internal static readonly string Plg_desc = "用弹幕来播放歌曲吧";
         internal static readonly string Plg_cont = "15253直播间";
+
         /// <summary>
         /// 管理窗体
         /// </summary>
@@ -97,32 +97,16 @@ namespace DMPlugin_DGJ
             }));
         }
 
-        internal static SongItem SearchSong(string username, string str, bool? arglyric = null)
+        internal static SongInfo SearchSong(string keyword)
         {
-            bool lrc = arglyric == null ? Config.needLyric : (bool)arglyric;
-
             if (CurrentModuleA == null)
             { Logg("没有歌曲搜索模块！", true); return null; } // 默认搜索模块没设置
 
-            string str_encoded = System.Web.HttpUtility.UrlEncode(str);
+            SongInfo songInfo = CurrentModuleA.SafeSearch(keyword);
+            if (songInfo == null && CurrentModuleB != null)
+            { songInfo = CurrentModuleB.SafeSearch(keyword); }
 
-            SongItem i = CurrentModuleA.SafeSearch(username, str_encoded, lrc);
-            if (i == null && CurrentModuleB != null)
-            { i = CurrentModuleB.SafeSearch(username, str_encoded, lrc); }
-
-            if (i != null && i.User != username)
-            {
-                Logg($"搜索模块“{i.ModuleName}”因传递数据错误已被禁用", true);
-                PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
-                {
-                    SearchModules.Remove(i.Module);
-                    if (Mainw.Combo_SearchModuleA.SelectedIndex == -1) // 防null
-                    { Mainw.Combo_SearchModuleA.SelectedIndex = 0; }
-                }));
-                return null;
-            }
-
-            return i;
+            return songInfo;
         }
 
         /// <summary>
@@ -130,8 +114,10 @@ namespace DMPlugin_DGJ
         /// </summary>
         /// <param name="i">歌曲信息</param>
         /// <returns>是否在黑名单中</returns>
-        internal static bool isBlack(SongItem i)
+        internal static bool IsInBlackList(SongInfo i)
         {
+            string singerstr = string.Join("", i.Singers);
+
             foreach (BlackInfoItem b in BlackList)
             {
                 if (b.BLK_Enable)
@@ -139,15 +125,15 @@ namespace DMPlugin_DGJ
                     switch (b.BLK_Type)
                     {
                         case BlackInfoType.歌名:
-                            if (i.SongName.Contains(b.BLK_Text))
+                            if (i.Name.IndexOf(b.BLK_Text, StringComparison.CurrentCultureIgnoreCase) > -1)
                             { return true; }
                             break;
                         case BlackInfoType.歌手:
-                            if (i.SingersText.Contains(b.BLK_Text))
+                            if (singerstr.IndexOf(b.BLK_Text, StringComparison.CurrentCultureIgnoreCase) > -1)
                             { return true; }
                             break;
                         case BlackInfoType.歌曲ID:
-                            if (i.SongID == b.BLK_Text)
+                            if (i.Id == b.BLK_Text)
                             { return true; }
                             break;
                         default:
@@ -185,12 +171,16 @@ namespace DMPlugin_DGJ
         /// <param name="text">显示的文字</param>
         /// <param name="red">名字是否显示为红色</param>
         /// <param name="fullscreen">是否显示到滚动弹幕栏</param>
-        internal static void fakeDM(string name, string text, bool red = true, bool fullscreen = false)
+        internal static void FakeDM(string name, string text, bool red = true, bool fullscreen = false)
         {
             PluginMain.self.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
             {
-                dynamic mw = System.Windows.Application.Current.MainWindow;
-                mw.AddDMText(name, text, red, fullscreen);
+                try
+                {
+                    dynamic mw = System.Windows.Application.Current.MainWindow;
+                    mw.AddDMText(name, text, red, fullscreen);
+                }
+                catch (Exception) { }
             }));
         }
 

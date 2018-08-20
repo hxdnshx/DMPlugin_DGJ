@@ -57,7 +57,7 @@ namespace DMPlugin_DGJ
             if (m == null)
             { Module_Setting.Visibility = Visibility.Collapsed; }
             else
-            { Module_Setting.Visibility = m.NeedSettings ? Visibility.Visible : Visibility.Collapsed; }
+            { Module_Setting.Visibility = m.IsNeedSettings ? Visibility.Visible : Visibility.Collapsed; }
 
         }
 
@@ -125,21 +125,21 @@ namespace DMPlugin_DGJ
         {
             var menuItem = (MenuItem)sender;
             var contextMenu = (ContextMenu)menuItem.Parent;
-            var items = (DataGrid)contextMenu.PlacementTarget;
-            if (items.SelectedCells.Count == 0)
+            var modules = (DataGrid)contextMenu.PlacementTarget;
+            if (modules.SelectedCells.Count == 0)
                 return;
-            var item = items.SelectedCells[0].Item as SongsSearchModule;
-            if (item == null)
+            var searchModule = modules.SelectedCells[0].Item as SongsSearchModule;
+            if (searchModule == null)
             { return; }
 
-            InputDialog i = new InputDialog("歌曲名字：", "", "添加歌曲");
+            InputDialog i = new InputDialog("歌曲名字：", string.Empty, "添加歌曲");
             if (i.ShowDialog() == true && i.Answer != string.Empty)
             {
-                SongItem song = item.SafeSearch(Config.MASTER_NAME, System.Web.HttpUtility.UrlEncode(i.Answer), Config.needLyric);
-                if (song != null)
+                SongInfo songInfo = searchModule.SafeSearch(i.Answer);
+                if (songInfo != null)
                 {
-                    Center.AddSong(song);
-                    Center.Logg("手动添加歌曲成功：" + song.SongName);
+                    Center.AddSong(new SongItem(songInfo, Config.MASTER_NAME));
+                    Center.Logg("手动添加歌曲成功：" + songInfo.Name);
                 }
             }
             i = null;
@@ -223,16 +223,6 @@ namespace DMPlugin_DGJ
         private void Vol_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             PlayControl.SetVol((int)((Slider)sender).Value);
-        }
-
-        /// <summary>
-        /// 是否需要搜索歌词
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void needLyricChange(object sender, RoutedEventArgs e)
-        {
-            Config.needLyric = (bool)((CheckBox)sender).IsChecked;
         }
 
         /// <summary>
