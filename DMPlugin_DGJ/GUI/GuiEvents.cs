@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,21 +97,21 @@ namespace DMPlugin_DGJ
                 string searchStr = i.Answer;
                 Task.Run(() =>
                 {
-                    var result = item.SafeGetPlaylist(Config.MASTER_NAME, System.Web.HttpUtility.UrlEncode(searchStr), true);
+                    var result = item.SafeGetPlaylist(System.Web.HttpUtility.UrlEncode(searchStr));
                     if (result == null)
                     {
                         MessageBox.Show($"未找到对应的歌单：{i.Answer}", "提示");
                         return;
                     }
-                    var preview = string.Join("\n",result.Take(6).Select(song=>$"{song.SongName}-{song.SingersText}"));
+                    var preview = string.Join("\n",result.Take(6).Select(song=>$"{song.Name}-{string.Join(";", song.Singers)}"));
                     if (MessageBox.Show($"您确认要导入歌单里的以下曲目吗？\n{preview}\n{(result.Count > 6 ? "......" : "")}",
                             "确认",MessageBoxButton.YesNo)
                         == MessageBoxResult.Yes)
                     {
-                        foreach (var songItem in result)
-                        {
-                            Center.AddSong(songItem);
-                        }
+                        foreach (var songInfo in result)
+                            {
+                                Center.AddSong(new SongItem(songInfo, Config.MASTER_NAME));
+                            }
                     }
                 });
                 

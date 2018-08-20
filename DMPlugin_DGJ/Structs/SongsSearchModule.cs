@@ -98,7 +98,7 @@ namespace DMPlugin_DGJ
         /// <param name="keyword"></param>歌单的关键词(或ID)
         /// <param name="needLyric">是否需要歌词</param>
         /// <returns></returns>
-        protected internal virtual List<SongItem> GetPlaylist(string who, string keyword, bool needLyric = false)
+        protected virtual List<SongInfo> GetPlaylist(string keyword)
         {
             return null;
         }
@@ -145,11 +145,11 @@ namespace DMPlugin_DGJ
         /// <param name="keyword"></param>歌单的关键词(或ID)
         /// <param name="needLyric">是否需要歌词</param>
         /// <returns></returns>
-        public List<SongItem> SafeGetPlaylist(string who, string keyword, bool needLyric = false)
+        public List<SongInfo> SafeGetPlaylist(string keyword)
         {
             try
             {
-                return GetPlaylist(who, keyword, needLyric);
+                return GetPlaylist(keyword);
             }
             catch (Exception ex)
             {
